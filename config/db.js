@@ -1,24 +1,25 @@
 import mongoose from "mongoose";
 
 let cached = global.mongoose;
+
 if (!cached) {
-  cached = global.mongoose = { conn: null, Promise: null };
+  cached = global.mongoose = { conn: null, promise: null };
 }
+
 async function connectDB() {
-  if (cached.conn) {
-    return cached.conn;
-  }
-  if (!cached.Promise) {
+  if (cached.conn) return cached.conn;
+
+  if (!cached.promise) {
     const opts = {
-      BufferCommands: false,
+      bufferCommands: false,
     };
-    cached.Promise = mongoose
+
+    cached.promise = mongoose
       .connect(`${process.env.MONGODB_URI}/vithvath`, opts)
-      .then((mongoose) => {
-        return mongoose;
-      });
+      .then((mongoose) => mongoose);
   }
-  cached.conn = await cached.Promise;
+
+  cached.conn = await cached.promise;
   return cached.conn;
 }
 
